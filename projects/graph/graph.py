@@ -110,20 +110,40 @@ class Graph:
         breath-first order.
         """
         # create a empty queue, and enqueue a PATH to the starting vertex
-        # queue.enqueue([starting_vertex])
+        plan_to_visit = Queue()
+        plan_to_visit.enqueue(starting_vertex)
+
         # create a set for visited vertices
+        visited_vertices = set()
+        paths = []
+
         # while the queue is not empty
+        while plan_to_visit.size() > 0:
+
             # dequeue the first PATH
+            current_vertex = plan_to_visit.dequeue()
+
             # grab the last vertex in the path
-            # if it hasn't been visited 
-                # check if its the target 
-                    # Return the path 
+            
+            # if it hasn't been visited
+            if current_vertex not in visited_vertices:
+
                 # mark it as visited
+                visited_vertices.add(current_vertex)
+
+                # check if its the target
+                if current_vertex == destination_vertex:
+                    # Return the path
+                    return visited_vertices
+
                 # make new versions of the current path, with each neighbor added to them
+                for neighbor in self.get_neighbors(current_vertex):
+                    if neighbor not in visited_vertices:
+                        plan_to_visit.enqueue(neighbor)
+
                     # duplicate the path
                     # add the neighbor
                     # add the new path to the queue
-        pass  # TODO
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -131,7 +151,34 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        # create a plan_to_visit stack and add starting_vertex to it
+        plan_to_visit = Stack()
+        plan_to_visit.push(starting_vertex)
+
+        # create a Set for visited_vertices
+        visited_vertices = set()
+
+        # while the plan_to_visit stack is not Empty:
+        while plan_to_visit.size() > 0:
+
+            # pop the first vertex from the stack
+            current_vertex = plan_to_visit.pop()
+
+            # if its not been visited
+            if current_vertex not in visited_vertices:
+                
+                # mark it as visited, (add it to visited_vertices)   
+                visited_vertices.add(current_vertex)
+
+                # check if its the target
+                if current_vertex == destination_vertex:
+                    # Return the path
+                    return visited_vertices
+
+                # add all unvisited neighbors to the stack
+                for neighbor in self.get_neighbors(current_vertex):
+                    if neighbor not in visited_vertices:
+                        plan_to_visit.push(neighbor)
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
@@ -168,7 +215,7 @@ if __name__ == '__main__':
     Should print:
         {1: {2}, 2: {3, 4}, 3: {5}, 4: {6, 7}, 5: {3}, 6: {3}, 7: {1, 6}}
     '''
-    print(graph.vertices)
+    # print(graph.vertices)
 
     '''
     Valid BFT paths:
@@ -185,7 +232,7 @@ if __name__ == '__main__':
         1, 2, 4, 3, 7, 6, 5
         1, 2, 4, 3, 7, 5, 6
     '''
-    graph.bft(1)
+    # graph.bft(1)
 
     '''
     Valid DFT paths:
@@ -194,13 +241,15 @@ if __name__ == '__main__':
         1, 2, 4, 7, 6, 3, 5
         1, 2, 4, 6, 3, 5, 7
     '''
-    graph.dft(1)
-    graph.dft_recursive(1)
+    # graph.dft(1)
+    # graph.dft_recursive(1)
 
     '''
     Valid BFS path:
         [1, 2, 4, 6]
     '''
+    print("- BFS shortest path -")
+    print("Expecting: [1, 2, 4, 6]")
     print(graph.bfs(1, 6))
 
     '''
@@ -208,5 +257,7 @@ if __name__ == '__main__':
         [1, 2, 4, 6]
         [1, 2, 4, 7, 6]
     '''
+    print("- DFS path -")
+    print("Expecting: [1, 2, 4, 6] or [1, 2, 4, 7, 6]")
     print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    # print(graph.dfs_recursive(1, 6))
