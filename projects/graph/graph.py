@@ -109,9 +109,9 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        # create a empty queue, and enqueue a PATH to the starting vertex
+        # create a empty queue, and enqueue a PATH to the starting vertex (list)
         plan_to_visit = Queue()
-        plan_to_visit.enqueue(starting_vertex)
+        plan_to_visit.enqueue([starting_vertex])
 
         # create a set for visited vertices
         visited_vertices = set()
@@ -121,29 +121,30 @@ class Graph:
         while plan_to_visit.size() > 0:
 
             # dequeue the first PATH
-            current_vertex = plan_to_visit.dequeue()
+            path = plan_to_visit.dequeue()
 
             # grab the last vertex in the path
+            current_vertex = path[-1]
             
             # if it hasn't been visited
             if current_vertex not in visited_vertices:
 
-                # mark it as visited
-                visited_vertices.add(current_vertex)
-
                 # check if its the target
                 if current_vertex == destination_vertex:
                     # Return the path
-                    return visited_vertices
+                    return path
+
+                # mark it as visited
+                visited_vertices.add(current_vertex)
 
                 # make new versions of the current path, with each neighbor added to them
                 for neighbor in self.get_neighbors(current_vertex):
-                    if neighbor not in visited_vertices:
-                        plan_to_visit.enqueue(neighbor)
-
                     # duplicate the path
+                    new_path = list(path)
                     # add the neighbor
+                    new_path.append(neighbor)
                     # add the new path to the queue
+                    plan_to_visit.enqueue(new_path)
 
     def dfs(self, starting_vertex, destination_vertex):
         """
