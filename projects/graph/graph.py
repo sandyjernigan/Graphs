@@ -145,6 +145,8 @@ class Graph:
                     new_path.append(neighbor)
                     # add the new path to the queue
                     plan_to_visit.enqueue(new_path)
+                    
+        return None # return None is implied
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -154,7 +156,7 @@ class Graph:
         """
         # create a plan_to_visit stack and add starting_vertex to it
         plan_to_visit = Stack()
-        plan_to_visit.push(starting_vertex)
+        plan_to_visit.push([starting_vertex])
 
         # create a Set for visited_vertices
         visited_vertices = set()
@@ -163,23 +165,30 @@ class Graph:
         while plan_to_visit.size() > 0:
 
             # pop the first vertex from the stack
-            current_vertex = plan_to_visit.pop()
+            path = plan_to_visit.pop()
+
+            # Get current_vertex
+            current_vertex = path[-1]
 
             # if its not been visited
             if current_vertex not in visited_vertices:
-                
-                # mark it as visited, (add it to visited_vertices)   
-                visited_vertices.add(current_vertex)
 
                 # check if its the target
                 if current_vertex == destination_vertex:
                     # Return the path
-                    return visited_vertices
+                    return path
+                
+                # mark it as visited, (add it to visited_vertices)   
+                visited_vertices.add(current_vertex)
 
                 # add all unvisited neighbors to the stack
                 for neighbor in self.get_neighbors(current_vertex):
-                    if neighbor not in visited_vertices:
-                        plan_to_visit.push(neighbor)
+                    # duplicate the path
+                    new_path = list(path)
+                    # add the neighbor
+                    new_path.append(neighbor)
+                    # add the new path to the queue
+                    plan_to_visit.push(new_path)
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
