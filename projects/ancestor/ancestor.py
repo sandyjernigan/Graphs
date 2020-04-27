@@ -1,15 +1,6 @@
-class Stack():
-    def __init__(self):
-        self.stack = []
-    def push(self, value):
-        self.stack.append(value)
-    def pop(self):
-        if self.size() > 0:
-            return self.stack.pop()
-        else:
-            return None
-    def size(self):
-        return len(self.stack)
+# Import Graph Class
+from graph import Graph
+from util import Stack, Queue
 
 def earliest_ancestor(ancestors, starting_node):
     '''
@@ -29,39 +20,133 @@ def earliest_ancestor(ancestors, starting_node):
     A parent may have any number of children.
 
     '''
-    # Using the Depth First method 
-    # Create an empty stack
+    ancestorsGraph = Graph()
+    # ancestorsList = []
+
+    # Add ancestors data to Graph
+    for dataset in ancestors:
+
+        # For each set check both values
+        for data in dataset:
+
+            # Check if vertex exists
+            if not data in ancestorsGraph.vertices.keys():
+
+                # Add vertex if does not exist
+                ancestorsGraph.add_vertex(data)
+
+    # Add ancestors connections to Graph
+    for dataset in ancestors:
+        ancestorsGraph.add_edge(dataset[0], dataset[1])
+                
+    # print(ancestorsGraph.vertices)
+
+    ''' Get The Earliest Ancestor '''
+    parents = []
+
+    # Create a plan_to_visit Stack
     plan_to_visit = Stack()
-    plan_to_visit.push([starting_node])
+    plan_to_visit.push(starting_node)
 
-    # Create a Set for visited ancestors
-    visited_nodes = set()
-
+    # create a Set for visited_vertices
+    visited_vertices = set()
+    
     # while the plan_to_visit stack is not Empty:
     while plan_to_visit.size() > 0:
 
-        # Remove the first node from the stack
-        path = plan_to_visit.pop()
-
-        # Get current_vertex
-        current_node = path[-1]
+        # pop the first vertex from the stack
+        current_vertex = plan_to_visit.pop()
 
         # if its not been visited
-        if current_node not in visited_nodes:
+        if current_vertex not in visited_vertices:
 
-            # check if its the target
-            if current_vertex == destination_vertex:
-                # Return the path
-                return path
-            
             # mark it as visited, (add it to visited_vertices)   
             visited_vertices.add(current_vertex)
 
-            # add all unvisited neighbors to the stack
-            for neighbor in self.get_neighbors(current_vertex):
-                # duplicate the path
-                new_path = list(path)
-                # add the neighbor
-                new_path.append(neighbor)
-                # add the new path to the queue
-                plan_to_visit.push(new_path)
+            # Check vertices for parent/child
+            for parent, child in ancestorsGraph.vertices.items():
+                
+                # Check if node is a child
+                if current_vertex in child:
+
+                    # Check if already in list
+                    if parent not in visited_vertices:
+
+                        # Add to list
+                        plan_to_visit.push(parent)
+                        parents.append(parent)
+
+    print (parents)
+
+    # If no parents found, return with -1
+    if len(parents) == 0:
+        return -1
+
+    # if only 1 parents found, return with the parent
+    if len(parents) == 1:
+        return parents[0]
+
+    # More than 1 parent found, return the one with the lowest numeric ID
+    return min(parents)
+
+
+# Test Function
+test_ancestors = [(1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5), (4, 8), (8, 9), (11, 8), (10, 1)]
+
+def testFunction(testThis, shouldResult):
+    print (f"Test: {testThis}")
+    print (f"Test result: {earliest_ancestor(test_ancestors, testThis)}")
+    print (f"Should result: {shouldResult}")
+
+testThis = 1
+shouldResult = 10
+testFunction(testThis, shouldResult)
+
+testThis = 2
+shouldResult = -1
+testFunction(testThis, shouldResult)
+
+# testThis = earliest_ancestor(test_ancestors, 3)
+# testResult = 10
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 4)
+# testResult = -1
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 5)
+# testResult = 4
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 6)
+# testResult = 10
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 7)
+# testResult = 4
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 8)
+# testResult = 4
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 9)
+# testResult = 4
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 10)
+# testResult = -1
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
+
+# testThis = earliest_ancestor(test_ancestors, 11)
+# testResult = -1
+# print (f"Test result: {testThis}")
+# print (f"Should result: {testResult}")
