@@ -21,8 +21,24 @@ class Stack():
     def size(self):
         return len(self.stack)
 
-def get_neighbors():
-  pass
+def get_neighbors(current_vertex, matrix):
+  neighbors = set()
+  row = current_vertex[0]
+  col = current_vertex[1]
+  # check north direction
+  if row > 0 and matrix[row - 1][col]:
+    neighbors.add((row - 1, col))
+  # check south direction
+  if row < len(matrix) - 1 and matrix[row + 1][col] == 1:
+    neighbors.add((row + 1, col))
+  # check west / left
+  if col > 0 and matrix[row][col - 1] == 1:
+    neighbors.add((row, col - 1))
+  # check east / right
+  if col < len(matrix) - 1 and matrix[row][col + 1] == 1:
+    neighbors.add((row, col + 1))
+
+
 
 def dft(row_index, col_index, matrix, visited_verticies):
   neighbors_to_visit = Stack()
@@ -30,8 +46,8 @@ def dft(row_index, col_index, matrix, visited_verticies):
 
   while neighbors_to_visit.size() > 0:
     current_vertex = neighbors_to_visit.pop()
-    if (row_index, col_index) not in visited_verticies:
-      visited_verticies.add((row_index, col_index))
+    if current_vertex not in visited_verticies:
+      visited_verticies.add(current_vertex)
       for neighbor in get_neighbors():
         neighbors_to_visit.push(neighbor)
 
